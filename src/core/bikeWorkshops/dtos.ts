@@ -2,7 +2,6 @@ import { ServiceHistoryEntry, ServiceRequestStatus } from './model';
 
 export interface NewServiceRequestDto {
   bike_pk: string;
-  workshop_pk: string;
   description: string;
 }
 

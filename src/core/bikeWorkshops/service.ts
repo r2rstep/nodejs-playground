@@ -33,9 +33,10 @@ export class BikeWorkshopService {
 @Injectable()
 export class ServiceRequestService {
   async registerNewServiceRequest(
+    workshopPk: string,
     requestData: NewServiceRequestDto,
   ): Promise<string> {
-    const newRequest = ServiceRequest.new(requestData);
+    const newRequest = ServiceRequest.new(workshopPk, requestData);
 
     const repo = db.getRepository<ServiceRequest>(ServiceRequestTable);
     await repo.insert(newRequest);

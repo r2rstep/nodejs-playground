@@ -59,12 +59,15 @@ export class ServiceRequest {
     return this.history[this.history.length - 1].occured_at;
   }
 
-  static new(requestData: NewServiceRequestDto): ServiceRequest {
+  static new(
+    workshopPk: string,
+    requestData: NewServiceRequestDto,
+  ): ServiceRequest {
     const status = ServiceRequestStatus.received;
     const newRequest = new ServiceRequest(
       v4(),
       requestData.bike_pk,
-      requestData.workshop_pk,
+      workshopPk,
       requestData.description,
       ServiceRequestStatus.empty,
     );

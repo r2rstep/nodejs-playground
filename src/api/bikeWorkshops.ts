@@ -28,8 +28,6 @@ export class ServiceRequestReq {
   @ApiProperty()
   bike_pk: string;
   @ApiProperty()
-  workshop_pk: string;
-  @ApiProperty()
   description: string;
 }
 
@@ -86,12 +84,12 @@ export class BikeWorkshopsController {
   @ApiOperation({
     summary: 'Register new bike service request in the workshop',
   })
-  @Post(':workshop_pk/serviceRequests')
+  @Post(':workshopPk/serviceRequests')
   async registerNewServiceRequest(
-    @Param('workshop_pk') workshop_pk: string,
+    @Param('workshopPk') workshopPk: string,
     @Body() req: ServiceRequestReq,
   ): Promise<void> {
-    await this.serviceRequestService.registerNewServiceRequest(req);
+    await this.serviceRequestService.registerNewServiceRequest(workshopPk, req);
   }
 
   @ApiOperation({
