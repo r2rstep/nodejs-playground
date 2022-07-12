@@ -22,7 +22,7 @@ export class BikerService {
   async addNewBike(newBikeData: BikeDto): Promise<void> {
     const newBike = Bike.new(newBikeData);
 
-    const repo = db.getRepository<Biker>(BikeTable);
+    const repo = db.getRepository<Bike>(BikeTable);
     try {
       await repo.insert(newBike);
     } catch (error) {
@@ -30,5 +30,13 @@ export class BikerService {
         'You already have a bike with name ' + newBikeData.name,
       );
     }
+  }
+
+  async getBikerBikes(bikerPk: string): Promise<BikeDto[]> {
+    const repo = db.getRepository<Bike>(BikeTable);
+    return await repo.find({
+      where: { biker_pk: bikerPk },
+      order: { name: 'asc' },
+    });
   }
 }

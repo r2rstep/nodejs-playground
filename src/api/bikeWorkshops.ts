@@ -1,11 +1,16 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { ApiOkResponse, ApiOperation, ApiProperty } from '@nestjs/swagger';
+import {
+  ApiExtraModels,
+  ApiOkResponse,
+  ApiOperation,
+  ApiProperty,
+} from '@nestjs/swagger';
 import { ServiceRequestStatus } from 'src/core/bikeWorkshops/model';
 import {
   BikeWorkshopService,
   ServiceRequestService,
 } from 'src/core/bikeWorkshops/service';
-import { ListedResp } from './commons';
+import { ValuesApiOkResponse, ValuesResp } from './commons';
 
 export class CreateBikeWorkshopReq {
   @ApiProperty()
@@ -36,7 +41,7 @@ export class ServiceRequest {
   pk: string;
   @ApiProperty()
   bike_pk: string;
-  @ApiProperty()
+  @ApiProperty({ enum: ServiceRequestStatus, enumName: 'ServiceRequestStatus' })
   status: ServiceRequestStatus;
   @ApiProperty()
   created_at: Date;
@@ -59,6 +64,8 @@ export class ServiceRequest {
 }
 
 @Controller('bikeWorkshops')
+@ApiExtraModels(ValuesResp)
+@ApiExtraModels(ServiceRequest)
 export class BikeWorkshopsController {
   constructor(
     private readonly bikeWorkshopService: BikeWorkshopService,
@@ -72,11 +79,11 @@ export class BikeWorkshopsController {
   }
 
   @ApiOperation({ summary: 'Get bike workshop' })
-  @ApiOkResponse({ type: ListedResp<BikeWorkshop> })
+  @ApiOkResponse({ type: ValuesResp<BikeWorkshop> })
   @Get()
-  async getWorkshops(): Promise<ListedResp<BikeWorkshop>> {
+  async getWorkshops(): Promise<ValuesResp<BikeWorkshop>> {
     const workshops = await await this.bikeWorkshopService.getBikeWorkshops();
-    return new ListedResp<BikeWorkshop>(
+    return new ValuesResp<BikeWorkshop>(
       workshops.map((s) => new BikeWorkshop(s.pk, s.name)),
     );
   }
@@ -96,13 +103,13 @@ export class BikeWorkshopsController {
     summary: "List workshop's service requests",
   })
   @Get(':workshop_pk/serviceRequests')
-  @ApiOkResponse({ type: ListedResp<ServiceRequest> })
+  @ValuesApiOkResponse(ServiceRequest)
   async getServiceRequests(
     @Param('workshop_pk') workshop_pk: string,
-  ): Promise<ListedResp<ServiceRequest>> {
+  ): Promise<ValuesResp<ServiceRequest>> {
     const servicesRequests =
       await this.serviceRequestService.getWorkshopServiceRequests(workshop_pk);
-    return new ListedResp<ServiceRequest>(
+    return new ValuesResp<ServiceRequest>(
       servicesRequests.map(
         (s) =>
           new ServiceRequest(
